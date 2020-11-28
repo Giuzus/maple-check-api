@@ -5,6 +5,6 @@ module.exports = {
         RedirectUrl: process.env.REDIRECT_URL
     },
     Mongo: {
-        URI: proccess.env.MONGO_URI
+        URI: process.env.MONGO_URI
     }
 }
