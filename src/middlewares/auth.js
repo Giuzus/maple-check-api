@@ -6,32 +6,36 @@ const scopes = [
 ];
 
 const oauth2Client = new google.auth.OAuth2(
-    config.GoogleClientID,
-    config.GoogleSecret,
-    config.GoogleRedirectUrl
+    config.Google.ClientID,
+    config.Google.Secret,
+    config.Google.RedirectUrl
 );
 
-const url = oauth2Client.generateAuthUrl({
-    access_type: 'offline',
+const authUrl = oauth2Client.generateAuthUrl({
+    access_type: 'online',
     scope: scopes
 });
 
 module.exports = (app) => {
-    
-    app.get('/auth/callback', async function(req, res){
-        
+
+    app.get('/auth/callback', async function (req, res) {
+
         let code = req.query.code;
 
         let { tokens } = await oauth2Client.getToken(code)
-        
+
         res.cookie('auth', tokens);
-        
-        res.redirect('/')
+
+        res.status(200).send('Auth success');
     });
-    
+
     app.use((req, res, next) => {
 
         let authCookie = req.cookies['auth'];
+
+        if (!authCookie?.access_token) {
+            return res.status(401).send(authUrl);
+        }
 
         oauth2Client.setCredentials({ access_token: authCookie.access_token });
 
@@ -43,13 +47,13 @@ module.exports = (app) => {
         oauth2.userinfo.get(
             function (err, userInfo) {
                 if (err) {
-                    return res.redirect(url);
+                    return res.status(401).send(authUrl);
                 }
-                
+
                 req.googleUser = userInfo.data;
 
                 return next();
             });
     });
-    
+
 }
