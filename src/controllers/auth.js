@@ -10,7 +10,7 @@ const scopes = [
 
 module.exports = (app) => {
 
-    app.get('/auth/authUrl', async function (req, res) {
+    app.get('/auth/authUrl', async (req, res) => {
 
         let redirect = req.query['redirect'];
 
@@ -32,11 +32,9 @@ module.exports = (app) => {
         res.status(200).send(authUrl);
     });
 
-    app.post('/auth/getToken', async function (req, res, next) {
+    app.post('/auth/getToken', async (req, res, next) => {
 
         try {
-
-
             let code = req.body.code;
             let redirect = req.body.redirect;
 

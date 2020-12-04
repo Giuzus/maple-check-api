@@ -3,8 +3,7 @@ const config = require('../../configuration')
 
 const oauth2Client = new google.auth.OAuth2(
     config.Google.ClientID,
-    config.Google.Secret,
-    config.Google.RedirectUrl
+    config.Google.Secret
 );
 
 module.exports = (app) => {

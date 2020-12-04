@@ -13,7 +13,10 @@ mongoose.connect(config.Mongo.URI, {
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    credentials: true,
+    origin: config.CORS.origin
+}));
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -23,6 +26,9 @@ require('./src/controllers/auth.js')(app);
 
 //Register auth middlewares
 require('./src/middlewares/auth.js')(app);
+
+//Register user controller
+require('./src/controllers/user.js')(app);
 
 //Register quests controller
 require('./src/controllers/quests.js')(app);

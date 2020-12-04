@@ -6,5 +6,8 @@ module.exports = {
     },
     Mongo: {
         URI: process.env.MONGO_URI
+    },
+    CORS: {
+        origin: process.env.CORS_ORIGIN
     }
 }
