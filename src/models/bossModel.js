@@ -23,6 +23,6 @@ var bossSchema = new Schema({
     }
 });
 
-var Quests = mongoose.model('Quests', questSchema);
+var Bosses = mongoose.model('Bosses', bossSchema);
 
-module.exports = Quests;
+module.exports = Bosses;

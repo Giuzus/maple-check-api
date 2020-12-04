@@ -1,8 +1,9 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const config = require('./configuration');
-
+const cors = require('cors');
 
 
 mongoose.connect(config.Mongo.URI, {
@@ -12,13 +13,22 @@ mongoose.connect(config.Mongo.URI, {
 
 const app = express();
 
+app.use(cors());
+
 app.use(cookieParser());
+app.use(bodyParser.json());
+
+//Register auth controller
+require('./src/controllers/auth.js')(app);
 
 //Register auth middlewares
 require('./src/middlewares/auth.js')(app);
 
-//Register quests controllers
+//Register quests controller
 require('./src/controllers/quests.js')(app);
+
+//Register bosses controller
+require('./src/controllers/bosses.js')(app);
 
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
