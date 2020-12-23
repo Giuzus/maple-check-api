@@ -15,5 +15,8 @@
     "express": "^4.17.1",
     "googleapis": "^65.0.0",
     "mongoose": "^5.10.17"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
   }
 }

@@ -16,6 +16,10 @@ var questSchema = new Schema({
     image: {
         type: String,
         required: true
+    },
+    completed: {
+        type: Boolean,
+        required: false
     }
 });
 

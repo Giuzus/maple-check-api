@@ -1,5 +1,4 @@
 
-
 module.exports = (app) => {
 
     app.get('/user', (req, res, next) => {
@@ -12,7 +11,5 @@ module.exports = (app) => {
         catch (err) {
             next(err);
         }
-
     });
-
 }
