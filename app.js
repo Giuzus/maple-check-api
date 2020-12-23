@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const config = require('./configuration');
 const cors = require('cors');
 
-
+console.log("Connect to MONGO")
 mongoose.connect(config.Mongo.URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true

@@ -1,6 +1,7 @@
 const { google } = require('googleapis');
 const config = require('../../configuration')
 
+console.log("Connect to GOOGLE");
 const oauth2Client = new google.auth.OAuth2(
     config.Google.ClientID,
     config.Google.Secret
