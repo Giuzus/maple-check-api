@@ -13,7 +13,7 @@ module.exports = (app) => {
 
         let authCookie = req.cookies['auth'];
 
-        if (!authCookie?.access_token) {
+        if (!authCookie || !authCookie.access_token) {
             return res.status(401).send();
         }
 
