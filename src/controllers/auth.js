@@ -46,7 +46,10 @@ module.exports = (app) => {
 
             let { tokens } = await oauth2Client.getToken(code)
 
-            res.cookie('auth', tokens);
+            res.cookie('auth', tokens, {
+                secure: true,
+                sameSite: 'None'
+            });
 
             res.status(200).send('Auth success');
         }
