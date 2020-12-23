@@ -47,8 +47,8 @@ module.exports = (app) => {
             let { tokens } = await oauth2Client.getToken(code)
 
             res.cookie('auth', tokens, {
-                secure: true,
-                sameSite: 'None'
+                secure: config.Environment == 'PROD',
+                sameSite: config.Environment == 'PROD' ? 'none' : 'lax',
             });
 
             res.status(200).send('Auth success');
