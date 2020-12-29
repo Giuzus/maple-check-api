@@ -81,6 +81,9 @@ module.exports = (app) => {
                     completeDate: date
                 });
             }
+
+            return res.status(200).send("Success");
+
         } catch (err) {
             next(err);
         }
