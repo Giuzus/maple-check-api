@@ -8,10 +8,18 @@ module.exports = (app) => {
         try {
 
             let quests = await Quests.find();
+            let date = null;
+            if (req.params.date) {
+                date = new Date(req.params.date);
+            }
+            else {
+                date = new Date();
+            }
+            date.setHours(0, 0, 0, 0);
 
-            let date = new Date(req.params.date);
-
-            date.setHours(0,0,0,0);
+            console.log(`Get quests`);
+            console.log(`Date: ${date}`);
+            console.log(`User: ${req.googleUser.name}(${req.googleUser.id})`);
 
             let completedQuests = await CompletedQuests.find({
                 userId: req.googleUser.id,
@@ -22,7 +30,7 @@ module.exports = (app) => {
                 quest.completed = completedQuests.some(completed => completed.questId == quest._id)
 
                 return quest;
-            })
+            });
 
             res.status(200).send(quests);
 
@@ -41,9 +49,21 @@ module.exports = (app) => {
                 || typeof req.body.date === 'undefined')
                 return res.send(400, "Invalid parameters");
 
-            let date = new Date(req.body.date)
+            let date = null;
+            if (req.body.date) {
+                date = new Date(req.body.date);
+            }
+            else {
+                date = new Date();
+            }
 
-            date.setHours(0,0,0,0);
+            date.setHours(0, 0, 0, 0);
+
+            console.log(`Change quest state`);
+            console.log(`Date: ${date}`);
+            console.log(`User: ${req.googleUser.name}(${req.googleUser.id})`);
+            console.log(`Quest: ${req.body.id}`);
+            console.log(`Completed: ${req.body.completed}`);
 
             if (req.body.completed) {
                 //add new completed quest for day   
