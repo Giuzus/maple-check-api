@@ -40,6 +40,7 @@ module.exports = (app) => {
                 },
                 {
                     $match: {
+                        userId: req.googleUser.id,
                         $or: [{
                             completeDate: date,
                             'boss.type': 'DAILY'
