@@ -20,6 +20,10 @@ var bossSchema = new Schema({
     crystalValue: {
         type: Number,
         required: false
+    },
+    order: {
+        type: Number,
+        required: true
     }
 });
 

@@ -19,7 +19,7 @@ var questSchema = new Schema({
     },
     order: {
         type: Number,
-        required: false
+        required: true
     }
 });
 
