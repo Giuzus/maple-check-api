@@ -17,8 +17,8 @@ var questSchema = new Schema({
         type: String,
         required: true
     },
-    completed: {
-        type: Boolean,
+    order: {
+        type: Number,
         required: false
     }
 });
