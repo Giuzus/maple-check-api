@@ -19,7 +19,7 @@ module.exports = (app) => {
             }
             date.setHours(0, 0, 0, 0);
 
-            let startOfWeek = DateHelpers.GetStartOfWeek(date);
+            let startOfWeek = DateHelpers.GetStartOfWeek(date, weeklyResetDay);
             let endOfWeek = DateHelpers.GetEndOfWeek(startOfWeek);
 
             console.log(`Get bosses`);

@@ -2,6 +2,8 @@ const Quests = require('../models/questModel');
 const CompletedQuests = require('../models/completedQuestModel');
 const DateHelpers = require('../helpers/date-helpers');
 
+const weeklyResetDay = 1; //monday;
+
 module.exports = (app) => {
 
     app.get('/quests/:date', async (req, res, next) => {
@@ -17,7 +19,7 @@ module.exports = (app) => {
             }
             date.setHours(0, 0, 0, 0);
 
-            let startOfWeek = DateHelpers.GetStartOfWeek(date);
+            let startOfWeek = DateHelpers.GetStartOfWeek(date, weeklyResetDay);
             let endOfWeek = DateHelpers.GetEndOfWeek(startOfWeek);
 
             console.log(`Get quests`);

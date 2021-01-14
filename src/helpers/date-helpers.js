@@ -1,9 +1,7 @@
-const weeklyResetDay = 4; //thursday;
-
 module.exports = {
-    GetStartOfWeek(date) {
+    GetStartOfWeek(date, resetDay) {
         let startOfWeek = new Date(date);
-        while (startOfWeek.getDay() != weeklyResetDay) {
+        while (startOfWeek.getDay() != resetDay) {
             startOfWeek.setDate(startOfWeek.getDate() - 1);
         }
         return startOfWeek;
