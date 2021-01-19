@@ -24,7 +24,7 @@ module.exports = (app) => {
         );
 
         let authUrl = oauth2Client.generateAuthUrl({
-            access_type: 'online',
+            access_type: 'offline',
             scope: scopes,
             redirect_uri: redirect
         });
@@ -45,7 +45,8 @@ module.exports = (app) => {
             );
 
             let { tokens } = await oauth2Client.getToken(code)
-
+            oauth2Client.setCredentials(tokens);
+            
             res.cookie('auth', tokens, {
                 secure: config.Environment == 'PROD',
                 sameSite: config.Environment == 'PROD' ? 'none' : 'lax',
