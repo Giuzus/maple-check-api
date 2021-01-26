@@ -45,8 +45,9 @@ module.exports = (app) => {
             );
 
             let { tokens } = await oauth2Client.getToken(code)
-            oauth2Client.setCredentials(tokens);
-            
+            oauth2Client.setCredentials({ access_token: tokens.access_token, refresh_token: tokens.refresh_token });
+
+
             res.cookie('auth', tokens, {
                 secure: config.Environment == 'PROD',
                 sameSite: config.Environment == 'PROD' ? 'none' : 'lax',
