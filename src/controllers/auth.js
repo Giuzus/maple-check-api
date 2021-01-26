@@ -25,6 +25,7 @@ module.exports = (app) => {
 
         let authUrl = oauth2Client.generateAuthUrl({
             access_type: 'offline',
+            prompt: 'consent',
             scope: scopes,
             redirect_uri: redirect
         });
