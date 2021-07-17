@@ -17,8 +17,6 @@ module.exports = (app) => {
             return res.status(401).send();
         }
 
-        console.log(authCookie.access_token + ' ' + authCookie.refresh_token);
-
         oauth2Client.setCredentials(authCookie);
 
         var oauth2 = google.oauth2({

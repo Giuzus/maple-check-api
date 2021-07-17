@@ -30,16 +30,13 @@ require('./src/middlewares/auth.js')(app);
 //Register user controller
 require('./src/controllers/user.js')(app);
 
-//Register quests controller
-require('./src/controllers/quests.js')(app);
-
-//Register bosses controller
-require('./src/controllers/bosses.js')(app);
+//Register Tasks controller
+require('./src/controllers/tasks.js')(app);
 
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
-        res.render('error', {
+        res.send({
             message: err.message,
             error: err
         });

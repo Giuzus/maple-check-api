@@ -2,11 +2,17 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var bossSchema = new Schema({
-    type: {
+var taskSchema = new Schema({
+    repeats: {
         type: String,
         default: 'DAILY',
         enum: ['DAILY', 'WEEKLY'],
+        required: true
+    },
+    type: {
+        type: String,
+        default: 'QUEST',
+        enum: ['QUEST', 'BOSS'],
         required: true
     },
     name: {
@@ -17,16 +23,20 @@ var bossSchema = new Schema({
         type: String,
         required: true
     },
+    order: {
+        type: Number,
+        required: true
+    },
     crystalValue: {
         type: Number,
         required: false
     },
-    order: {
-        type: Number,
+    default: {
+        type: Boolean,
         required: true
-    }
+    },
 });
 
-var Bosses = mongoose.model('Bosses', bossSchema);
+var Tasks = mongoose.model('Tasks', taskSchema);
 
-module.exports = Bosses;
+module.exports = Tasks;

@@ -2,14 +2,14 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var completedQuestSchema = new Schema({
+var completedTaskSchema = new Schema({
     userId: {
         type: String,
         required: true
     },
-    quest: {
+    task: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Quests'
+        ref: 'Tasks'
     },
     completeDate: {
         type: Date,
@@ -17,6 +17,6 @@ var completedQuestSchema = new Schema({
     }
 });
 
-var CompletedQuests = mongoose.model('CompletedQuests', completedQuestSchema);
+var CompletedTasks = mongoose.model('CompletedTasks', completedTaskSchema);
 
-module.exports = CompletedQuests;
+module.exports = CompletedTasks;
