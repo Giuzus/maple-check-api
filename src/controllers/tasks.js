@@ -142,6 +142,18 @@ module.exports = (app) => {
         }
     });
 
+    app.get('/tasks/:id', async (req, res, next) => {
+        try {
+
+            let taskId = req.params.id;
+
+            let task = await Tasks.findById(taskId);
+            return res.status(200).send(task);
+        } catch (err) {
+            next(err);
+        }
+    });
+
     app.post('/tasks', async (req, res, next) => {
         try {
             let task = req.body;
@@ -166,7 +178,7 @@ module.exports = (app) => {
                 res.status(400).send(error.message);
             }
 
-            let query = await Tasks.update(task);
+            let query = await Tasks.findOneAndUpdate({ _id: task._id }, task, { useFindAndModify: false });
             let updatedTask = await Tasks.findById(task._id);
 
             return res.status(200).send(updatedTask);
