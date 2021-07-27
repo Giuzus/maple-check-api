@@ -1,6 +1,5 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const config = require('./configuration');
 const cors = require('cors');
@@ -19,7 +18,8 @@ app.use(cors({
 }));
 
 app.use(cookieParser());
-app.use(bodyParser.json());
+app.use(express.json())
+app.use(express.urlencoded({ extended: true}))
 
 //Register auth controller
 require('./src/controllers/auth.js')(app);
@@ -31,7 +31,13 @@ require('./src/middlewares/auth.js')(app);
 require('./src/controllers/user.js')(app);
 
 //Register Tasks controller
-require('./src/controllers/tasks.js')(app);
+require('./src/controllers/task.js')(app);
+
+//Register Tasks controller
+require('./src/controllers/task.js')(app);
+
+//Register Characters controller
+require('./src/controllers/character.js')(app);
 
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
