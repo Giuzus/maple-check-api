@@ -10,14 +10,8 @@ const BOSS_TYPE = 'BOSS';
 
 module.exports = (app) => {
 
-    app.get('/tasks/:type/:date', async (req, res, next) => {
+    app.get('/tasks/day/:date', async (req, res, next) => {
         try {
-
-            let type = req.params.type;
-
-            if (type != QUEST_TYPE && type != BOSS_TYPE) {
-                return res.status(400).send('incorrect type');
-            }
 
             let date = null;
             if (req.params.date) {
@@ -36,11 +30,9 @@ module.exports = (app) => {
             let startOfWeek = DateHelpers.GetStartOfWeek(date, weeklyResetDay);
             let endOfWeek = DateHelpers.GetEndOfWeek(startOfWeek);
 
-            console.log(`Get ${type}`);
-            console.log(`Date: ${date}`);
-            console.log(`User: ${req.googleUser.name}(${req.googleUser.id})`);
+            
 
-            let tasks = await Tasks.find({ type: type });
+            let tasks = await Tasks.find();
             let completedTasks = await CompletedTasks.aggregate([
                 {
                     $lookup: {
@@ -102,12 +94,6 @@ module.exports = (app) => {
 
             date.setHours(0, 0, 0, 0);
 
-            console.log(`Change task state`);
-            console.log(`Date: ${date}`);
-            console.log(`User: ${req.googleUser.name}(${req.googleUser.id})`);
-            console.log(`Task: ${req.body.id}`);
-            console.log(`Completed: ${req.body.completed}`);
-
             if (req.body.completed) {
                 //add new completed task for day   
                 await CompletedTasks.create({
@@ -135,7 +121,10 @@ module.exports = (app) => {
 
     app.get('/tasks', async (req, res, next) => {
         try {
-            let tasks = await Tasks.find();
+            let tasks = await Tasks.find({
+                $or: [{default: true}, { userId: req.googleUser.id }]
+            });
+
             return res.status(200).send(tasks);
         } catch (err) {
             next(err);
@@ -158,6 +147,7 @@ module.exports = (app) => {
         try {
             let task = req.body;
             task.default = false;
+            task.userId = req.googleUser.id;
 
             let createdTask = await Tasks.create(task);
             return res.status(201).send(createdTask);

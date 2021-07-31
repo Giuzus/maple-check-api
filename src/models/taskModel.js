@@ -23,12 +23,12 @@ var taskSchema = new Schema({
         type: String,
         required: true
     },
-    order: {
-        type: Number,
-        required: true
-    },
     crystalValue: {
         type: Number,
+        required: false
+    },
+    userId: {
+        type: String,
         required: false
     },
     default: {
