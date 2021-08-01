@@ -10,7 +10,7 @@ const BOSS_TYPE = 'BOSS';
 
 module.exports = (app) => {
 
-    app.get('/tasks/day/:date', async (req, res, next) => {
+    app.get('/tasks/completed/:date', async (req, res, next) => {
         try {
 
             let date = null;
@@ -25,48 +25,10 @@ module.exports = (app) => {
             }
             date.setHours(0, 0, 0, 0);
 
-            let weeklyResetDay = type == QUEST_TYPE ? weeklyQuestResetDay : weeklyBossResetDay;
+            let completedBosses = await getCompletedTasks("BOSS", date, req.googleUser.id);
+            let completedQuests = await getCompletedTasks("QUEST", date, req.googleUser.id);
 
-            let startOfWeek = DateHelpers.GetStartOfWeek(date, weeklyResetDay);
-            let endOfWeek = DateHelpers.GetEndOfWeek(startOfWeek);
-
-            
-
-            let tasks = await Tasks.find();
-            let completedTasks = await CompletedTasks.aggregate([
-                {
-                    $lookup: {
-                        from: "tasks",
-                        localField: "task",
-                        foreignField: "_id",
-                        as: 'task'
-                    }
-                },
-                {
-                    $unwind: '$task'
-                },
-                {
-                    $match: {
-                        userId: req.googleUser.id,
-                        $or: [{
-                            completeDate: date,
-                            'task.repeats': 'DAILY'
-                        },
-                        {
-                            completeDate: { $gte: startOfWeek, $lte: endOfWeek },
-                            'task.repeats': 'WEEKLY'
-                        }]
-                    }
-                }
-            ]);
-
-
-            let result = tasks.map(task => {
-                let ret = { ...task._doc }
-
-                ret.completed = completedTasks.some(completed => completed.task._id.equals(quest._id))
-                return ret;
-            });
+            let result = completedQuests.concat(completedBosses);
 
             res.status(200).send(result);
         }
@@ -75,18 +37,19 @@ module.exports = (app) => {
         }
     });
 
-    app.post('/tasks/changestate', async (req, res, next) => {
+    app.post('/tasks/change-state', async (req, res, next) => {
 
         try {
 
-            if (typeof req.body.id === 'undefined'
+            if (typeof req.body.taskId === 'undefined'
+                || typeof req.body.characterId === 'undefined'
                 || typeof req.body.completed === 'undefined'
                 || typeof req.body.date === 'undefined')
                 return res.send(400, "Invalid parameters");
 
             let date = null;
             if (req.body.date) {
-                date = new Date(req.body.date);
+                date = new Date(Number(req.body.date));
             }
             else {
                 date = new Date();
@@ -94,24 +57,23 @@ module.exports = (app) => {
 
             date.setHours(0, 0, 0, 0);
 
+            let completedObject = {
+                task: req.body.taskId,
+                character: req.body.characterId,
+                completeDate: date
+            };
+
             if (req.body.completed) {
                 //add new completed task for day   
-                await CompletedTasks.create({
-                    userId: req.googleUser.id,
-                    task: req.body.id,
-                    completeDate: date
-                });
+                completedObject = await CompletedTasks.create(completedObject);
+                return res.status(200).send(completedObject);
             }
             else {
                 //delete completed quest for day
-                await CompletedTasks.findOneAndDelete({
-                    userId: req.googleUser.id,
-                    quest: req.body.id,
-                    completeDate: date
-                });
+                await CompletedTasks.findOneAndDelete(completedObject);
+                return res.status(204).send();
             }
 
-            return res.status(200).send("Success");
 
         } catch (err) {
             next(err);
@@ -122,7 +84,7 @@ module.exports = (app) => {
     app.get('/tasks', async (req, res, next) => {
         try {
             let tasks = await Tasks.find({
-                $or: [{default: true}, { userId: req.googleUser.id }]
+                $or: [{ default: true }, { userId: req.googleUser.id }]
             });
 
             return res.status(200).send(tasks);
@@ -207,3 +169,53 @@ module.exports = (app) => {
 
 }
 
+async function getCompletedTasks(type, date, userId) {
+    let weeklyResetDay = type == QUEST_TYPE ? weeklyQuestResetDay : weeklyBossResetDay;
+
+    let startOfWeek = DateHelpers.GetStartOfWeek(date, weeklyResetDay);
+    let endOfWeek = DateHelpers.GetEndOfWeek(startOfWeek);
+
+    let completedTasks = await CompletedTasks.aggregate([
+        {
+            $lookup: {
+                from: "tasks",
+                localField: "task",
+                foreignField: "_id",
+                as: 'task-lookup'
+            },
+        },
+        {
+            $unwind: '$task-lookup'
+        },
+        {
+            $match: {
+                'task-lookup.type': type,
+                $and: [
+                    {
+                        $or: [{
+                            'task-lookup.userId': userId
+                        },
+                        {
+                            'task-lookup.default': true
+                        }],
+                    },
+                    {
+                        $or: [{
+                            completeDate: date,
+                            'task-lookup.repeats': 'DAILY'
+                        },
+                        {
+                            completeDate: { $gte: startOfWeek, $lte: endOfWeek },
+                            'task-lookup.repeats': 'WEEKLY'
+                        }]
+                    }
+                ]
+            }
+        },
+        {
+            $unset: "task-lookup"
+        }
+    ]);
+
+    return completedTasks;
+}
