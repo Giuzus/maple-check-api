@@ -1,6 +1,6 @@
 const Characters = require('../models/characterModel');
-const DateHelpers = require('../helpers/date-helpers');
 const Classes = require('../models/classModel');
+const ArrayHelpers = require('../helpers/array-helpers');
 
 const ObjectId = require('mongoose').Types.ObjectId;
 
@@ -26,7 +26,9 @@ module.exports = (app) => {
                     $unwind: '$class'
                 }
             ]);
-            
+
+            ArrayHelpers.sort(characters);
+
             return res.status(200).send(characters);
         } catch (err) {
             next(err);
@@ -36,6 +38,8 @@ module.exports = (app) => {
     app.get('/characters/classes', async (req, res, next) => {
 
         let classes = await Classes.find();
+
+        ArrayHelpers.sort(classes);
 
         return res.status(200).send(classes);
 
@@ -65,13 +69,13 @@ module.exports = (app) => {
                     $unwind: '$class'
                 }
             ]);
-            
-            if(character.length == 0){
+
+            if (character.length == 0) {
                 return res.status(404).send();
             }
 
             return res.status(200).send(character[0]);
-            
+
         } catch (err) {
             next(err);
         }
@@ -84,7 +88,27 @@ module.exports = (app) => {
             character.userId = req.googleUser.id;
 
             let createdCharacter = await Characters.create(character);
-            return res.status(201).send(createdCharacter);
+
+            createdCharacter = await Characters.aggregate([
+                {
+                    $match: {
+                        _id: ObjectId(createdCharacter.id)
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "classes",
+                        localField: "class",
+                        foreignField: "_id",
+                        as: 'class'
+                    }
+                },
+                {
+                    $unwind: '$class'
+                }
+            ]);
+
+            return res.status(201).send(createdCharacter[0]);
         } catch (err) {
             next(err);
         }
@@ -107,9 +131,28 @@ module.exports = (app) => {
             }
 
             await Characters.findOneAndUpdate({ _id: character._id }, character, { useFindAndModify: false });
-            let updatedCharacter = await Characters.findById(character._id);
 
-            return res.status(200).send(updatedCharacter);
+
+            let updatedCharacter = await Characters.aggregate([
+                {
+                    $match: {
+                        _id: ObjectId(character.id)
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "classes",
+                        localField: "class",
+                        foreignField: "_id",
+                        as: 'class'
+                    }
+                },
+                {
+                    $unwind: '$class'
+                }
+            ]);
+
+            return res.status(200).send(updatedCharacter[0]);
         } catch (err) {
             next(err);
         }

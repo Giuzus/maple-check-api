@@ -22,6 +22,29 @@ var characterSchema = new Schema({
     userId: {
         type: String,
         required: true
+    },
+    configuration: {
+        required: false,
+        type: Object,
+        hidden: {
+            type: Boolean,
+            required: true
+        },
+        tasks: [{
+            task: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Tasks',
+                required: true
+            },
+            hidden: {
+                type: Boolean,
+                reqiured: true
+            },
+            priority: {
+                type: Number,
+                reqiured: true
+            }
+        }]
     }
 });
 
