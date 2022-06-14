@@ -7,6 +7,14 @@
 			"problemMatcher": [],
 			"label": "npm: start",
 			"detail": "node app.js"
+		},
+		{
+			"type": "npm",
+			"script": "start:watch",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: start:watch",
+			"detail": "nodemon app.js"
 		}
 	]
 }
