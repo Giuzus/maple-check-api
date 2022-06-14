@@ -1,5 +1,4 @@
 const Characters = require('../models/characterModel');
-const Classes = require('../models/classModel');
 const ArrayHelpers = require('../helpers/array-helpers');
 
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -13,17 +12,6 @@ module.exports = (app) => {
                     $match: {
                         userId: req.googleUser.id
                     }
-                },
-                {
-                    $lookup: {
-                        from: "classes",
-                        localField: "class",
-                        foreignField: "_id",
-                        as: 'class'
-                    }
-                },
-                {
-                    $unwind: '$class'
                 }
             ]);
 
@@ -33,16 +21,6 @@ module.exports = (app) => {
         } catch (err) {
             next(err);
         }
-    });
-
-    app.get('/characters/classes', async (req, res, next) => {
-
-        let classes = await Classes.find();
-
-        ArrayHelpers.sort(classes);
-
-        return res.status(200).send(classes);
-
     });
 
     app.get('/characters/:id', async (req, res, next) => {
@@ -56,17 +34,6 @@ module.exports = (app) => {
                         _id: ObjectId(characterId),
                         userId: req.googleUser.id
                     }
-                },
-                {
-                    $lookup: {
-                        from: "classes",
-                        localField: "class",
-                        foreignField: "_id",
-                        as: 'class'
-                    }
-                },
-                {
-                    $unwind: '$class'
                 }
             ]);
 
@@ -83,6 +50,7 @@ module.exports = (app) => {
 
     app.post('/characters', async (req, res, next) => {
         try {
+            console.log("bruv")
             let character = req.body;
 
             character.userId = req.googleUser.id;

@@ -7,14 +7,6 @@ var characterSchema = new Schema({
         type: String,
         required: true
     },
-    level: {
-        type: Number,
-        required: true
-    },
-    class: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Class'
-    },
     position: {
         type: Number,
         required: false
