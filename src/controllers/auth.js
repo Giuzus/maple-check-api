@@ -10,6 +10,15 @@ const scopes = [
 
 module.exports = (app) => {
 
+    app.get('/auth/logout', async (req, res) => {
+        let redirect = req.query['redirect'];
+
+        res.cookie('auth');
+
+        res.redirect(redirect);
+    });
+
+
     app.get('/auth/authUrl', async (req, res) => {
 
         let redirect = req.query['redirect'];
