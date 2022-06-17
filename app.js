@@ -6,11 +6,6 @@ const mongoose = require('mongoose');
 const config = require('./configuration');
 const cors = require('cors');
 
-console.log("Connect to MONGO")
-mongoose.connect(config.Mongo.URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
 
 const app = express();
 
@@ -21,7 +16,7 @@ app.use(cors({
 
 app.use(cookieParser());
 app.use(express.json())
-app.use(express.urlencoded({ extended: true}))
+app.use(express.urlencoded({ extended: true }))
 
 //Register auth controller
 require('./src/controllers/auth.js')(app);
@@ -31,9 +26,6 @@ require('./src/middlewares/auth.js')(app);
 
 //Register user controller
 require('./src/controllers/user.js')(app);
-
-//Register Tasks controller
-require('./src/controllers/task.js')(app);
 
 //Register Tasks controller
 require('./src/controllers/task.js')(app);
@@ -66,10 +58,21 @@ app.get('*', function (req, res) {
     res.status(404).send();
 });
 
-// Start the server
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
 
-    console.log(`App listening on port ${PORT}`);
+console.log("Connect to MONGO")
+mongoose.connect(config.Mongo.URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+},
+    () => {
+        console.log("Success connecting to MONGO")
+        // Start the server
+        const PORT = process.env.PORT || 5001;
+        app.listen(PORT, () => {
 
-});
+            console.log(`App listening on port ${PORT}`);
+
+        });
+    }
+)
+
