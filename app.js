@@ -64,8 +64,14 @@ mongoose.connect(config.Mongo.URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 },
-    () => {
-        console.log("Success connecting to MONGO")
+    (res) => {
+        if(res?.message){
+            console.error(res.message)
+            return;
+        }
+
+        console.log("Success connecting to mongo")
+        
         // Start the server
         const PORT = process.env.PORT || 5001;
         app.listen(PORT, () => {
