@@ -16,7 +16,7 @@ var characterSchema = new Schema({
         required: true
     },
     configuration: {
-        required: false,
+        required: true,
         type: Object,
         hidden: {
             type: Boolean,

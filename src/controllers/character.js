@@ -50,10 +50,13 @@ module.exports = (app) => {
 
     app.post('/characters', async (req, res, next) => {
         try {
-            console.log("bruv")
             let character = req.body;
 
             character.userId = req.googleUser.id;
+            character.configuration = {
+                hidden: false,
+                tasks: []
+            }
 
             let createdCharacter = await Characters.create(character);
 
@@ -87,6 +90,13 @@ module.exports = (app) => {
             let character = req.body;
             character = new Characters(character);
             character.userId = req.googleUser.id;
+
+            if (!character?.configuration) {
+                character.configuration = {
+                    hidden: false,
+                    tasks: []
+                }
+            }
 
             let error = character.validateSync();
             if (error) {
