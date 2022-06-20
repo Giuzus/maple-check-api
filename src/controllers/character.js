@@ -65,17 +65,6 @@ module.exports = (app) => {
                     $match: {
                         _id: ObjectId(createdCharacter.id)
                     }
-                },
-                {
-                    $lookup: {
-                        from: "classes",
-                        localField: "class",
-                        foreignField: "_id",
-                        as: 'class'
-                    }
-                },
-                {
-                    $unwind: '$class'
                 }
             ]);
 
