@@ -1,6 +1,6 @@
 const Characters = require('../models/characterModel');
 const ArrayHelpers = require('../helpers/array-helpers');
-
+const TaskService = require('../services/tasks')
 const ObjectId = require('mongoose').Types.ObjectId;
 
 module.exports = (app) => {
@@ -53,9 +53,12 @@ module.exports = (app) => {
             let character = req.body;
 
             character.userId = req.googleUser.id;
+
+            let tasks = await TaskService.getUserTasks(req.googleUser.id);
+
             character.configuration = {
                 hidden: false,
-                tasks: []
+                tasks: tasks.map((task,i)=> ({ task: task._id, hidden: false, priority: i}))
             }
 
             let createdCharacter = await Characters.create(character);

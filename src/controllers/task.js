@@ -1,7 +1,6 @@
 const Tasks = require('../models/taskModel');
 const CompletedTasks = require('../models/completedTaskModel');
 const DateHelpers = require('../helpers/date-helpers');
-const ArrayHelpers = require('../helpers/array-helpers');
 const TaskService = require('../services/tasks');
 
 const weeklyQuestResetDay = 1; //monday;
@@ -87,7 +86,7 @@ module.exports = (app) => {
         try {
             let tasks = await TaskService.getUserTasks(req.googleUser.id);
 
-            return res.status(200).send(tasks);s
+            return res.status(200).send(tasks);
         } catch (err) {
             next(err);
         }
