@@ -1,7 +1,7 @@
 const Tasks = require('../models/taskModel');
 const CompletedTasks = require('../models/completedTaskModel');
 const DateHelpers = require('../helpers/date-helpers');
-const TaskService = require('../services/tasks');
+const ArrayHelpers = require('../helpers/array-helpers');
 
 const weeklyQuestResetDay = 1; //monday;
 const weeklyBossResetDay = 4; //thursday;
@@ -84,7 +84,12 @@ module.exports = (app) => {
 
     app.get('/tasks', async (req, res, next) => {
         try {
-            let tasks = await TaskService.getUserTasks(req.googleUser.id);
+
+            let tasks = await Tasks.find({
+                $or: [{ default: true }, { userId: req.googleUser.id }]
+            });
+    
+            ArrayHelpers.sort(tasks);
 
             return res.status(200).send(tasks);
         } catch (err) {

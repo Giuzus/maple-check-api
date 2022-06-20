@@ -33,7 +33,7 @@ require('./src/controllers/task.js')(app);
 //Register Characters controller
 require('./src/controllers/character.js')(app);
 
-if (app.get('env') === 'development') {
+if (app.get('ENVIRONMENT') === 'DEV') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.send({
