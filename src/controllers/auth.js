@@ -65,8 +65,8 @@ module.exports = (app) => {
 
 
             res.cookie('auth', tokens, {
-                secure: config.Environment == 'PROD',
-                sameSite: config.Environment == 'PROD' ? 'none' : 'lax',
+                secure: true,
+                sameSite: 'none',
             });
 
             res.status(200).send('Auth success');
