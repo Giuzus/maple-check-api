@@ -57,9 +57,9 @@ module.exports = (app) => {
                 redirect
             );
 
-            console.log(`tokens: ${tokens}`)
-
+            
             let { tokens } = await oauth2Client.getToken(code)
+            console.log(`tokens: ${tokens}`)
             oauth2Client.setCredentials({ access_token: tokens.access_token, refresh_token: tokens.refresh_token });
 
 
