@@ -45,11 +45,8 @@ module.exports = (app) => {
     app.post('/auth/getToken', async (req, res, next) => {
 
         try {
-            console.log("get token")
             let code = req.body.code;
-            console.log(`code: ${code}`)
             let redirect = req.body.redirect;
-            console.log(`redirect: ${redirect}`)
 
             let oauth2Client = new google.auth.OAuth2(
                 config.Google.ClientID,
@@ -59,8 +56,6 @@ module.exports = (app) => {
 
             
             let { tokens } = await oauth2Client.getToken(code)
-            console.log(`access token: ${ tokens.access_token }`)
-            console.log(`refresh token: ${ tokens.refresh_token }`)
             oauth2Client.setCredentials({ access_token: tokens.access_token, refresh_token: tokens.refresh_token });
 
 
