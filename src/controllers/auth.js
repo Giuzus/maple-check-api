@@ -54,13 +54,14 @@ module.exports = (app) => {
                 redirect
             );
 
+            
             let { tokens } = await oauth2Client.getToken(code)
             oauth2Client.setCredentials({ access_token: tokens.access_token, refresh_token: tokens.refresh_token });
 
 
             res.cookie('auth', tokens, {
-                secure: config.Environment == 'PROD',
-                sameSite: config.Environment == 'PROD' ? 'none' : 'lax',
+                secure: true,
+                sameSite: 'none',
             });
 
             res.status(200).send('Auth success');
