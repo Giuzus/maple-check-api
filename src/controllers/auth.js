@@ -59,7 +59,8 @@ module.exports = (app) => {
 
             
             let { tokens } = await oauth2Client.getToken(code)
-            console.log(`tokens: ${tokens}`)
+            console.log(`access token: ${ tokens.access_token }`)
+            console.log(`refresh token: ${ tokens.refresh_token }`)
             oauth2Client.setCredentials({ access_token: tokens.access_token, refresh_token: tokens.refresh_token });
 
 
